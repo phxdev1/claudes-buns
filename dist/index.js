@@ -496,7 +496,7 @@ var source_default = chalk;
 
 // src/index.ts
 async function main() {
-  console.log(source_default.blue("\uD83D\uDE80 Claude Buns - Running Claude Code via Bun"));
+  console.log(source_default.blue("\uD83D\uDE80 Claude's Buns \uD83C\uDF51 - Running Claude Code via Bun"));
   try {
     const claudeCliPath = resolve("./node_modules/@anthropic-ai/claude-code/cli.js");
     const args = process.argv.slice(2);
@@ -533,7 +533,7 @@ To run Claude Buns:`));
 }
 process.on("SIGINT", () => {
   console.log(source_default.yellow(`
-\uD83D\uDC4B Goodbye from Claude Buns!`));
+\uD83D\uDC4B Goodbye from Claude's Buns! \uD83C\uDF51`));
   process.exit(0);
 });
 process.on("SIGTERM", () => {

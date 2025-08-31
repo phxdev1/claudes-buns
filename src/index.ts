@@ -4,14 +4,14 @@ import { resolve } from 'path';
 import chalk from 'chalk';
 
 /**
- * Claude Buns - Run Claude Code through Bun runtime
+ * Claude's Buns 🍑 - Run Claude Code through Bun runtime
  * 
  * This wrapper allows you to use the official @anthropic-ai/claude-code package
  * without needing Node.js installed - just Bun!
  */
 
 async function main() {
-  console.log(chalk.blue('🚀 Claude Buns - Running Claude Code via Bun'));
+  console.log(chalk.blue('🚀 Claude\'s Buns 🍑 - Running Claude Code via Bun'));
   
   try {
     // Path to the official claude-code CLI
@@ -64,7 +64,7 @@ async function main() {
 
 // Handle graceful shutdown
 process.on('SIGINT', () => {
-  console.log(chalk.yellow('\n👋 Goodbye from Claude Buns!'));
+  console.log(chalk.yellow('\n👋 Goodbye from Claude\'s Buns! 🍑'));
   process.exit(0);
 });
 

@@ -1,10 +1,10 @@
-# Claude Buns
+# Claude's Buns 🍑
 
-![](https://img.shields.io/badge/Bun-1.0%2B-brightgreen?style=flat-square) ![](https://img.shields.io/badge/No%20Node.js-required-blue?style=flat-square)
+![](https://img.shields.io/badge/Bun-1.0%2B-brightgreen?style=flat-square) ![](https://img.shields.io/badge/No%20Node.js-required-blue?style=flat-square) ![](https://img.shields.io/badge/🍑-Buns-orange?style=flat-square)
 
-**Claude Buns** is a Bun runtime wrapper for the official `@anthropic-ai/claude-code` package. It lets you run Claude Code without needing Node.js installed - just Bun!
+**Claude's Buns 🍑** is a Bun runtime wrapper for the official `@anthropic-ai/claude-code` package. It lets you run Claude Code without needing Node.js installed - just Bun!
 
-## Why Claude Buns?
+## Why Claude's Buns? 🍑
 
 - **🚀 No Node.js Required**: Run Claude Code with only Bun installed
 - **📦 Official Package**: Uses the official `@anthropic-ai/claude-code` package under the hood
@@ -21,8 +21,8 @@ curl -fsSL https://bun.sh/install | bash
 
 ### 2. Clone and Install
 ```bash
-git clone https://github.com/your-username/claude-buns.git
-cd claude-buns
+git clone https://github.com/your-username/claudes-buns.git
+cd claudes-buns
 bun install
 ```
 
@@ -39,7 +39,7 @@ bun run claude config
 
 ## What This Does
 
-Claude Buns is a lightweight wrapper that:
+Claude's Buns 🍑 is a lightweight wrapper that:
 
 1. **Downloads** the official `@anthropic-ai/claude-code` package
 2. **Runs** it through Bun's Node.js compatibility layer
@@ -52,8 +52,8 @@ You get the **exact same Claude Code experience** but running on **Bun instead o
 ### Method 1: Direct Bun Usage (Recommended)
 ```bash
 # Clone the repo
-git clone https://github.com/your-username/claude-buns.git
-cd claude-buns
+git clone https://github.com/your-username/claudes-buns.git
+cd claudes-buns
 
 # Install with Bun
 bun install
@@ -76,7 +76,7 @@ bun run start
 
 ## Available Commands
 
-All official Claude Code commands work through Claude Buns:
+All official Claude Code commands work through Claude's Buns 🍑:
 
 ```bash
 # Start interactive session
@@ -105,7 +105,7 @@ bun run claude --help
 
 ## Benefits Over Original
 
-| Feature | Node.js + Claude Code | Bun + Claude Buns |
+| Feature | Node.js + Claude Code | Bun + Claude's Buns 🍑 |
 |---------|---------------------|------------------|
 | **Runtime Dependency** | Node.js + npm | Just Bun |
 | **Installation Time** | Slower (npm install) | Faster (bun install) |
@@ -117,12 +117,12 @@ bun run claude --help
 ## How It Works
 
 ```
-User Command → Claude Buns Wrapper → Official Claude Code → Claude AI
-     ↓              ↓                      ↓                  ↓
+User Command → Claude's Buns 🍑 Wrapper → Official Claude Code → Claude AI
+     ↓              ↓                         ↓                  ↓
 bun run claude → src/index.ts → @anthropic-ai/claude-code → Anthropic API
 ```
 
-Claude Buns simply:
+Claude's Buns 🍑 simply:
 1. Receives your command
 2. Spawns the official Claude Code CLI using `bun run`
 3. Passes through all input/output seamlessly
@@ -150,7 +150,7 @@ bun install
 ```
 
 ### Authentication Issues
-Claude Buns uses the same authentication as official Claude Code. Follow the official Claude Code authentication setup.
+Claude's Buns 🍑 uses the same authentication as official Claude Code. Follow the official Claude Code authentication setup.
 
 ## Contributing
 
