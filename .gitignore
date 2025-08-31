@@ -1,0 +1,57 @@
+# Claude's Buns 🍑 - Git Ignore
+
+# Dependencies
+node_modules/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+bun-debug.log*
+bun-error.log*
+
+# Build outputs
+dist/
+*.tgz
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+.tmp/
+
+# Coverage
+coverage/
+.nyc_output/
+.coverage/
+
+# Archives
+*.tar.gz
+*.zip
+*.rar
+
+# Pi deployment artifacts
+claude-buns-pi/
+claude-buns-pi-zero.tar.gz
+
+# Docker artifacts (keep Dockerfile)
+docker-compose*
+
+# Claude Code settings (if any get created)
+.claude/settings.local.json
