@@ -74,6 +74,31 @@ bun run start
 ./dist/index.js --help
 ```
 
+### Method 3: Docker (Distroless) 🐳
+Perfect for CI/CD, containerized environments, or when you want zero dependencies:
+
+```bash
+# Build the distroless image
+docker build -t claudes-buns:latest .
+
+# Run Claude Code in container
+docker run -it --rm claudes-buns:latest
+
+# Interactive session with volume mount
+docker run -it --rm -v "$(pwd)":/workspace -w /workspace claudes-buns:latest
+
+# Use as base image in your Dockerfile
+FROM claudes-buns:latest
+# Your app code here...
+```
+
+#### Docker Image Features:
+- **🔒 Distroless**: No OS, no package manager, no shell - maximum security
+- **📦 Tiny Size**: ~50MB total (Bun + Claude Code + minimal runtime)
+- **⚡ Fast**: Multi-stage build with optimized layers
+- **🛡️ Secure**: Non-root user, minimal attack surface
+- **🚀 Ready**: Pre-built with all Claude Code dependencies
+
 ## Available Commands
 
 All official Claude Code commands work through Claude's Buns 🍑:
@@ -111,6 +136,9 @@ bun run claude --help
 | **Installation Time** | Slower (npm install) | Faster (bun install) |
 | **Startup Time** | Standard Node.js | Faster Bun runtime |
 | **Package Management** | npm/yarn/pnpm | Bun (built-in) |
+| **Docker Support** | ❌ No official image | ✅ Distroless image |
+| **Container Size** | ~200MB+ (with Node.js) | ~50MB (distroless) |
+| **Security** | Full OS in container | Minimal attack surface |
 | **Features** | ✅ Full | ✅ Full (identical) |
 | **Updates** | Manual npm update | Automatic with bun install |
 
@@ -130,8 +158,13 @@ Claude's Buns 🍑 simply:
 
 ## Requirements
 
+### Local Development
 - **Bun** 1.0+ (the only requirement!)
 - **Internet connection** (for downloading Claude Code package and AI requests)
+
+### Docker (Distroless)
+- **Docker** (no other dependencies needed!)
+- **Internet connection** (for AI requests)
 
 ## Troubleshooting
 
@@ -151,6 +184,52 @@ bun install
 
 ### Authentication Issues
 Claude's Buns 🍑 uses the same authentication as official Claude Code. Follow the official Claude Code authentication setup.
+
+### Docker Issues
+If you encounter Docker-related issues:
+
+```bash
+# Test the build
+docker build -t claudes-buns:test .
+
+# Run with debugging
+docker run -it --rm claudes-buns:test --version
+```
+
+## Docker Usage Examples
+
+### Use as Base Image
+```dockerfile
+# Your project's Dockerfile - multi-stage build
+FROM claudes-buns:latest as claude-base
+
+# Your application stage
+FROM node:alpine as app-build
+COPY . /app
+WORKDIR /app
+RUN npm install && npm run build
+
+# Final stage - distroless with Claude + your app
+FROM gcr.io/distroless/cc-debian11:nonroot
+COPY --from=claude-base /usr/local/bin/bun /usr/local/bin/bun
+COPY --from=claude-base /app /claude
+COPY --from=app-build /app/dist /workspace
+WORKDIR /workspace
+CMD ["/usr/local/bin/bun", "run", "/claude/dist/index.js", "-p", "review this code"]
+```
+
+### CI/CD Pipeline
+```dockerfile
+# Single multi-stage build for CI
+FROM claudes-buns:latest as claude
+FROM alpine:latest as runner
+RUN apk add --no-cache ca-certificates
+COPY --from=claude /usr/local/bin/bun /usr/local/bin/bun
+COPY --from=claude /app /claude
+COPY . /workspace
+WORKDIR /workspace  
+ENTRYPOINT ["/usr/local/bin/bun", "run", "/claude/dist/index.js"]
+```
 
 ## Contributing
 

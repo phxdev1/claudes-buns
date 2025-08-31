@@ -1,0 +1,72 @@
+# Claude's Buns 🍑 - Docker ignore file
+
+# Git
+.git
+.gitignore
+
+# Node.js / Bun
+node_modules
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs (will be rebuilt in container)
+dist
+
+# Development files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# IDE files
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Documentation (not needed in container)
+README.md
+CHANGELOG.md
+*.md
+
+# CI/CD
+.github
+.gitlab-ci.yml
+.travis.yml
+
+# Docker files (avoid inception)
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# Testing
+coverage
+.nyc_output
+.coverage
+
+# Temporary files
+tmp
+temp
+.tmp
+
+# Archives
+*.tar.gz
+*.zip
+*.rar
+
+# Python cache (if any)
+__pycache__
+*.pyc
+*.pyo
+
+# Old custom implementation files (already removed)
+.claude
+examples
