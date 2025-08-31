@@ -1,102 +1,80 @@
 #!/usr/bin/env bun
-import { Command } from 'commander';
-import { CommandManager } from './commands/CommandManager';
-import { AIService } from './services/AIService';
-import { ConfigManager } from './config/ConfigManager';
+import { spawn } from 'child_process';
+import { resolve } from 'path';
 import chalk from 'chalk';
 
-const program = new Command();
-const commandManager = new CommandManager();
-const aiService = new AIService();
-const configManager = new ConfigManager();
+/**
+ * Claude Buns - Run Claude Code through Bun runtime
+ * 
+ * This wrapper allows you to use the official @anthropic-ai/claude-code package
+ * without needing Node.js installed - just Bun!
+ */
 
 async function main() {
+  console.log(chalk.blue('🚀 Claude Buns - Running Claude Code via Bun'));
+  
   try {
-    // Initialize configuration
-    await configManager.init();
+    // Path to the official claude-code CLI
+    const claudeCliPath = resolve('./node_modules/@anthropic-ai/claude-code/cli.js');
     
-    // Setup CLI
-    program
-      .name('claude-buns')
-      .description('Claude Code ported to Buns - an agentic coding tool')
-      .version('1.0.0');
-
-    // Load custom commands from .claude/commands
-    await commandManager.loadCommands();
-
-    // Add interactive mode
-    program
-      .command('interactive')
-      .alias('i')
-      .description('Start interactive mode')
-      .action(async () => {
-        console.log(chalk.blue('🚀 Claude Buns Interactive Mode'));
-        await startInteractiveMode();
-      });
-
-    // Default behavior - start interactive mode if no command provided
-    if (process.argv.length === 2) {
-      console.log(chalk.blue('🚀 Claude Buns Interactive Mode'));
-      await startInteractiveMode();
-    } else {
-      await program.parseAsync(process.argv);
-    }
+    // Get command line arguments (excluding the first two which are bun and script path)
+    const args = process.argv.slice(2);
+    
+    console.log(chalk.dim('Starting official Claude Code...'));
+    
+    // Spawn the official claude-code CLI using Bun's Node.js compatibility
+    const child = spawn('bun', ['run', claudeCliPath, ...args], {
+      stdio: 'inherit', // Pass through stdin/stdout/stderr
+      env: process.env,
+      shell: true
+    });
+    
+    // Handle process exit
+    child.on('exit', (code) => {
+      process.exit(code || 0);
+    });
+    
+    // Handle errors
+    child.on('error', (error) => {
+      console.error(chalk.red('Error launching Claude Code:'), error.message);
+      
+      // Provide helpful error messages
+      if (error.message.includes('ENOENT')) {
+        console.error(chalk.yellow('\nTroubleshooting:'));
+        console.error(chalk.yellow('1. Make sure you ran: bun install'));
+        console.error(chalk.yellow('2. Ensure @anthropic-ai/claude-code is installed'));
+        console.error(chalk.yellow('3. Check that Bun is properly installed'));
+      }
+      
+      process.exit(1);
+    });
+    
   } catch (error) {
-    console.error(chalk.red('Error:'), error);
+    console.error(chalk.red('Failed to start Claude Code:'), error);
+    
+    // Provide installation instructions
+    console.error(chalk.yellow('\nTo install dependencies:'));
+    console.error(chalk.white('  bun install'));
+    console.error(chalk.yellow('\nTo run Claude Buns:'));
+    console.error(chalk.white('  bun run start'));
+    
     process.exit(1);
   }
 }
 
-async function startInteractiveMode() {
-  const { default: inquirer } = await import('inquirer');
-  
-  while (true) {
-    try {
-      const { input } = await inquirer.prompt([
-        {
-          type: 'input',
-          name: 'input',
-          message: chalk.green('claude-buns>'),
-          prefix: ''
-        }
-      ]);
+// Handle graceful shutdown
+process.on('SIGINT', () => {
+  console.log(chalk.yellow('\n👋 Goodbye from Claude Buns!'));
+  process.exit(0);
+});
 
-      if (input.toLowerCase() === 'exit' || input.toLowerCase() === 'quit') {
-        console.log(chalk.yellow('Goodbye! 👋'));
-        break;
-      }
-
-      if (input.trim()) {
-        await processInput(input);
-      }
-    } catch (error) {
-      if (error.name === 'ExitPromptError') {
-        console.log(chalk.yellow('\nGoodbye! 👋'));
-        break;
-      }
-      console.error(chalk.red('Error:'), error);
-    }
-  }
-}
-
-async function processInput(input: string) {
-  try {
-    // Check if it's a command
-    const customCommand = commandManager.getCommand(input);
-    if (customCommand) {
-      await commandManager.executeCommand(input);
-      return;
-    }
-
-    // Otherwise, send to AI
-    console.log(chalk.blue('🤖 Processing with AI...'));
-    const response = await aiService.processQuery(input);
-    console.log(response);
-  } catch (error) {
-    console.error(chalk.red('Error processing input:'), error);
-  }
-}
+process.on('SIGTERM', () => {
+  process.exit(0);
+});
 
 if (import.meta.main) {
-  main();
+  main().catch((error) => {
+    console.error(chalk.red('Unexpected error:'), error);
+    process.exit(1);
+  });
 }

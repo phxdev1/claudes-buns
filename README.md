@@ -1,115 +1,163 @@
 # Claude Buns
 
-![](https://img.shields.io/badge/Bun-1.0%2B-brightgreen?style=flat-square) [![npm]](https://www.npmjs.com/package/claude-buns)
+![](https://img.shields.io/badge/Bun-1.0%2B-brightgreen?style=flat-square) ![](https://img.shields.io/badge/No%20Node.js-required-blue?style=flat-square)
 
-Claude Buns is a port of Claude Code to the Bun runtime. It's an agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster by executing routine tasks, explaining complex code, and handling git workflows -- all through natural language commands.
+**Claude Buns** is a Bun runtime wrapper for the official `@anthropic-ai/claude-code` package. It lets you run Claude Code without needing Node.js installed - just Bun!
 
-## Features
+## Why Claude Buns?
 
-- **Interactive Terminal Interface**: Natural language commands in your terminal
-- **Custom Commands**: Define reusable commands with `.claude/commands/*.md` files
-- **Git Integration**: Automated git workflows and GitHub operations
-- **AI-Powered**: Leverages Claude AI for intelligent code assistance
-- **Bun-Native**: Built specifically for Bun runtime for optimal performance
+- **🚀 No Node.js Required**: Run Claude Code with only Bun installed
+- **📦 Official Package**: Uses the official `@anthropic-ai/claude-code` package under the hood
+- **⚡ Bun Performance**: Leverages Bun's fast JavaScript runtime and package management
+- **🔄 Always Up-to-Date**: Automatically uses the latest official Claude Code version
+- **💯 Full Compatibility**: All Claude Code features and commands work exactly as expected
 
-## Get Started
+## Quick Start
 
-1. Install dependencies:
+### 1. Install Bun (if you haven't already)
+```bash
+curl -fsSL https://bun.sh/install | bash
+```
 
-```sh
+### 2. Clone and Install
+```bash
+git clone https://github.com/your-username/claude-buns.git
+cd claude-buns
 bun install
 ```
 
-2. Set your Anthropic API key:
+### 3. Run Claude Code via Bun
+```bash
+# Interactive mode
+bun run claude
 
-```sh
-export ANTHROPIC_API_KEY=your_api_key_here
+# Or use any Claude Code command
+bun run claude --help
+bun run claude -p "explain this code" 
+bun run claude config
 ```
 
-3. Build the project:
+## What This Does
 
-```sh
+Claude Buns is a lightweight wrapper that:
+
+1. **Downloads** the official `@anthropic-ai/claude-code` package
+2. **Runs** it through Bun's Node.js compatibility layer
+3. **Passes through** all commands, options, and functionality seamlessly
+
+You get the **exact same Claude Code experience** but running on **Bun instead of Node.js**.
+
+## Installation Methods
+
+### Method 1: Direct Bun Usage (Recommended)
+```bash
+# Clone the repo
+git clone https://github.com/your-username/claude-buns.git
+cd claude-buns
+
+# Install with Bun
+bun install
+
+# Use Claude Code
+bun run claude
+```
+
+### Method 2: Build and Use Binary
+```bash
+# Build the wrapper
 bun run build
-```
 
-4. Run Claude Buns:
-
-```sh
+# Run the built version
 bun run start
+
+# Or run directly
+./dist/index.js --help
 ```
 
-Or in development mode:
+## Available Commands
 
-```sh
-bun run dev
+All official Claude Code commands work through Claude Buns:
+
+```bash
+# Start interactive session
+bun run claude
+
+# Print mode for scripting
+bun run claude -p "help me debug this function"
+
+# Configuration
+bun run claude config set theme dark
+bun run claude config get
+
+# MCP server management
+bun run claude mcp
+
+# Resume conversations
+bun run claude -r
+
+# Continue last conversation
+bun run claude -c
+
+# Version and help
+bun run claude --version
+bun run claude --help
 ```
 
-## Usage
+## Benefits Over Original
 
-### Interactive Mode
+| Feature | Node.js + Claude Code | Bun + Claude Buns |
+|---------|---------------------|------------------|
+| **Runtime Dependency** | Node.js + npm | Just Bun |
+| **Installation Time** | Slower (npm install) | Faster (bun install) |
+| **Startup Time** | Standard Node.js | Faster Bun runtime |
+| **Package Management** | npm/yarn/pnpm | Bun (built-in) |
+| **Features** | ✅ Full | ✅ Full (identical) |
+| **Updates** | Manual npm update | Automatic with bun install |
 
-Simply run `claude-buns` (or `bun run dev` in development) to start the interactive terminal:
-
-```
-🚀 Claude Buns Interactive Mode
-claude-buns> help me refactor this function
-```
-
-### Custom Commands
-
-Create custom commands in `.claude/commands/` directory. Commands are markdown files with YAML frontmatter:
-
-```markdown
----
-allowed-tools: Bash(git:*), Bash(gh:*)
-description: Create and push a new feature branch
----
-
-## Your task
-
-1. Create a new feature branch
-2. Make your changes
-3. Commit and push
-4. Create a pull request
-```
-
-### Configuration
-
-Configuration is stored in `~/.claude-buns/config.json`. You can also set environment variables:
-
-- `ANTHROPIC_API_KEY`: Your Anthropic API key (required)
-
-## Project Structure
+## How It Works
 
 ```
-claude-buns/
-├── src/
-│   ├── index.ts              # Main entry point
-│   ├── commands/
-│   │   └── CommandManager.ts # Command loading and execution
-│   ├── services/
-│   │   └── AIService.ts      # Anthropic AI integration
-│   └── config/
-│       └── ConfigManager.ts  # Configuration management
-├── .claude/
-│   └── commands/             # Custom command definitions
-└── dist/                     # Built output
+User Command → Claude Buns Wrapper → Official Claude Code → Claude AI
+     ↓              ↓                      ↓                  ↓
+bun run claude → src/index.ts → @anthropic-ai/claude-code → Anthropic API
 ```
 
-## Development
+Claude Buns simply:
+1. Receives your command
+2. Spawns the official Claude Code CLI using `bun run`
+3. Passes through all input/output seamlessly
+4. Handles graceful shutdown and error reporting
 
-### Building
+## Requirements
 
-```sh
-bun run build
+- **Bun** 1.0+ (the only requirement!)
+- **Internet connection** (for downloading Claude Code package and AI requests)
+
+## Troubleshooting
+
+### "bun: command not found"
+Install Bun first:
+```bash
+curl -fsSL https://bun.sh/install | bash
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
 ```
 
-### Development Mode
-
-```sh
-bun run dev
+### "Cannot find module @anthropic-ai/claude-code"
+Run the install command:
+```bash
+bun install
 ```
+
+### Authentication Issues
+Claude Buns uses the same authentication as official Claude Code. Follow the official Claude Code authentication setup.
+
+## Contributing
+
+This is a wrapper project. For Claude Code features and bugs, please report to the [official Claude Code repository](https://github.com/anthropics/claude-code).
+
+For wrapper-specific issues (Bun compatibility, installation, etc.), open an issue in this repository.
 
 ## License
 
-MIT
+MIT License - see the official `@anthropic-ai/claude-code` package for its licensing terms.
