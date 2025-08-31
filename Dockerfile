@@ -1,17 +1,18 @@
-# Claude's Buns 🍑 - Distroless Docker Image
-# Run Claude Code without Node.js or OS distro - just Bun!
+# Claude's Buns 🍑 - Multi-stage Alpine Build
+# Run Claude Code without Node.js - just Bun!
 
-FROM ubuntu:22.04 as builder
+FROM alpine:3.18 as builder
 
 # Install dependencies for Bun
-RUN apt-get update && apt-get install -y \
+RUN apk add --no-cache \
     ca-certificates \
     curl \
     unzip \
-    && rm -rf /var/lib/apt/lists/*
+    bash
 
 # Install Bun
-RUN curl -fsSL https://bun.sh/install | bash
+RUN curl -fsSL https://bun.sh/install | bash && \
+    source /root/.bashrc
 ENV PATH="/root/.bun/bin:${PATH}"
 
 # Set working directory
@@ -21,7 +22,7 @@ WORKDIR /app
 COPY package.json bun.lockb ./
 
 # Install dependencies
-RUN bun install --frozen-lockfile
+RUN bun install
 
 # Copy source code
 COPY src/ ./src/
@@ -29,19 +30,26 @@ COPY src/ ./src/
 # Build the application
 RUN bun run build
 
-# Production stage - distroless
-FROM gcr.io/distroless/cc-debian11:nonroot
+# Production stage - minimal Alpine
+FROM alpine:3.18
+
+# Install minimal runtime dependencies (including bash for shell commands)
+RUN apk add --no-cache ca-certificates bash
+
+# Create non-root user
+RUN adduser -D -s /bin/sh -u 1001 claude
 
 # Copy Bun binary from builder
 COPY --from=builder /root/.bun/bin/bun /usr/local/bin/bun
 
 # Copy built application
-COPY --from=builder --chown=nonroot:nonroot /app/dist/ /app/dist/
-COPY --from=builder --chown=nonroot:nonroot /app/node_modules/ /app/node_modules/
-COPY --from=builder --chown=nonroot:nonroot /app/package.json /app/
+COPY --from=builder --chown=claude:claude /app/dist/ /app/dist/
+COPY --from=builder --chown=claude:claude /app/node_modules/ /app/node_modules/
+COPY --from=builder --chown=claude:claude /app/package.json /app/
 
-# Set working directory
+# Set working directory and user
 WORKDIR /app
+USER claude
 
 # Set up environment
 ENV NODE_ENV=production
