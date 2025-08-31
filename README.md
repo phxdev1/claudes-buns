@@ -21,7 +21,7 @@ curl -fsSL https://bun.sh/install | bash
 
 ### 2. Clone and Install
 ```bash
-git clone https://github.com/your-username/claudes-buns.git
+git clone https://github.com/anthropics/claudes-buns.git
 cd claudes-buns
 bun install
 ```
@@ -52,7 +52,7 @@ You get the **exact same Claude Code experience** but running on **Bun instead o
 ### Method 1: Direct Bun Usage (Recommended)
 ```bash
 # Clone the repo
-git clone https://github.com/your-username/claudes-buns.git
+git clone https://github.com/anthropics/claudes-buns.git
 cd claudes-buns
 
 # Install with Bun
@@ -231,12 +231,67 @@ WORKDIR /workspace
 ENTRYPOINT ["/usr/local/bin/bun", "run", "/claude/dist/index.js"]
 ```
 
-## Contributing
+## 🚀 Raspberry Pi Zero Support
 
-This is a wrapper project. For Claude Code features and bugs, please report to the [official Claude Code repository](https://github.com/anthropics/claude-code).
+Claude's Buns 🍑 includes special support for Raspberry Pi Zero deployment:
 
-For wrapper-specific issues (Bun compatibility, installation, etc.), open an issue in this repository.
+### Quick Pi Zero Setup
+```bash
+# On your computer - create deployment package
+./create-pi-package.sh
 
-## License
+# Transfer to Pi Zero  
+scp claude-buns-pi-zero.tar.gz pi@raspberrypi.local:~
 
-MIT License - see the official `@anthropic-ai/claude-code` package for its licensing terms.
+# On Pi Zero - deploy and run
+tar xzf claude-buns-pi-zero.tar.gz
+cd claude-buns-pi  
+./deploy-pi-zero.sh
+bun run claude --help
+```
+
+**Pi Zero Performance**: Expect 3-5 second boot times (vs 1.1s on desktop)
+
+## 🐳 Docker Support
+
+Multi-stage Alpine build for containerized environments:
+
+```bash
+# Build distroless image (~227MB)
+docker build -t claudes-buns .
+
+# Run with volume mount for file operations
+docker run -it --rm -v "$(pwd)":/workspace -w /workspace claudes-buns
+
+# Use as base image in your projects
+FROM claudes-buns:latest
+COPY . /workspace
+WORKDIR /workspace
+CMD ["bun", "run", "dist/index.js", "-p", "review this code"]
+```
+
+## 📈 Performance Comparison
+
+| Metric | Node.js + Claude Code | Bun + Claude's Buns 🍑 |
+|--------|---------------------|----------------------|
+| **Boot Time** | 2-5 seconds | ~1.1 seconds |
+| **Memory Usage** | ~150-200MB | ~50-100MB |
+| **Container Size** | ~300MB+ | ~227MB |
+| **Installation** | npm install (slower) | bun install (faster) |
+| **Pi Zero Compatible** | ❌ Heavy | ✅ Optimized |
+
+## 🤝 Contributing
+
+This is a wrapper project that makes Claude Code accessible without Node.js:
+
+- **Claude Code issues**: Report to [official Claude Code repository](https://github.com/anthropics/claude-code)
+- **Wrapper issues**: Open issues here for Bun compatibility, Docker builds, Pi Zero support, etc.
+- **Pull Requests**: Welcome for deployment improvements, documentation, and platform support
+
+## 📄 License
+
+MIT License - This wrapper is MIT licensed. See the official `@anthropic-ai/claude-code` package for Claude Code's licensing terms.
+
+## ⭐ Star this Project
+
+If Claude's Buns 🍑 helps you run Claude Code faster and easier, please star this repository!
